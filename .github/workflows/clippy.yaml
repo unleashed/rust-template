@@ -4,6 +4,7 @@ on:
   push:
     branches-ignore:
       - '**.tmp'
+  pull_request:
 
 jobs:
   clippy_check:
@@ -15,8 +16,8 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-            toolchain: nightly
             # Note: some codegen tools actually format the code, so add rustfmt
+            toolchain: stable
             components: clippy, rustfmt
             override: true
 

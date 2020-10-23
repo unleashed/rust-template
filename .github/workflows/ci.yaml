@@ -14,13 +14,19 @@ env:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
+      fail-fast: false
       matrix:
         rust:
           - stable
           - beta
-          - nightly
-          - 1.46.0  # MSRV
+          - 1.47.0  # MSRV
+        experimental: [false]
+        include:
+          # Stop breakages in nightly to fail the workflow
+          - rust: nightly
+            experimental: true
 
     steps:
       - uses: actions/checkout@v2
@@ -46,12 +52,3 @@ jobs:
         with:
           command: fmt
           args: --all -- --check
-
-      # Clippy has its own workflow, so it's kept commented out here
-      # If you want to enable this, uncomment these lines below and
-      # add the clippy component above.
-      #
-      #- uses: actions-rs/cargo@v1
-      #  with:
-      #    command: clippy
-      #    args: -- -D warnings
